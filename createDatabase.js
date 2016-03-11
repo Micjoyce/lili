@@ -1,15 +1,26 @@
 var fs = require("fs");
 var _ = require("lodash");
-
 var originData = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+
+var createSeed = function(originData, count){
+	var resultArr = [];
+	resultArr = resultArr.concat(originData);
+	for (var i = 0; i < originData.length; i++) {
+		var itemX = originData[i];
+		for (var j = 0; j < originData.length; j++) {
+			var itemY = originData[j];
+			resultArr.push(itemX + itemY);
+		}
+	}
+	return resultArr.slice(count);
+}
 
 var createData = function(rows, maxColumns){
 	var returnData = [];
 	for (var rowLen = 0; rowLen < rows; rowLen++) {
 		var columns = Math.ceil(Math.random() * maxColumns) + 1;
-		var insertData = originData = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-		// console.log(originData.length, "originData");
-		// insertData = originData;
+		var originData = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+		var insertData = createSeed(originData, maxColumns);
 		var columnData = [];
 		while(columns > 0){
 			var cellDataPosition =Math.ceil(Math.random() * (insertData.length));
@@ -21,6 +32,7 @@ var createData = function(rows, maxColumns){
 	};
 	return returnData;
 }
+
 
 var formatData = function (data){
 	var resultStr = "";
@@ -39,5 +51,5 @@ var saveData = function(rows, maxColumns){
 	})
 }
 
-saveData(25000, 25);
+saveData(50000, 50);
 
