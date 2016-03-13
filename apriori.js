@@ -5,7 +5,7 @@ var Apriori = require('apriori');
 // new Apriori.Algorithm(0.15, 0.6, true).showAnalysisResultFromFile('dataset.csv');
 // new Apriori.Algorithm(0.05, 0.6, true).showAnalysisResultFromFile('database/T40I10D100K.csv');
 // new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('database/transaction-5000.csv');
-new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('database/mush-data.csv');
+new Apriori.Algorithm(0.25, 0.6, true).showAnalysisResultFromFile('database/mush-data.csv');
 
 
 
