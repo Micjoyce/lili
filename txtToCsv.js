@@ -12,7 +12,7 @@ var removeBlank = function (data){
 
 	return resultArray;
 }
-fs.readFile("database/T40I10D100K.txt", 'utf8', function (err, data) {
+fs.readFile("database/T1014D100K.txt", 'utf8', function (err, data) {
 	if(err){
 		throw err
 	}  
@@ -24,7 +24,7 @@ fs.readFile("database/T40I10D100K.txt", 'utf8', function (err, data) {
 			var item = formatData[i];
 			resultStr += item + "\n";
 		}
-		fs.writeFile("database/T40I10D100K.csv",resultStr, function(err){
+		fs.writeFile("database/T1014D100K.csv",resultStr, function(err){
 
 		} )
 	}
