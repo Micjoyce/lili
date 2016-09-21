@@ -59,7 +59,7 @@
 
                 var oneElementItemSets = self.toOneElementItemSets(transactions);
 
-                //convert to binary
+                //convert to binary 
                 var convertBinary = ArrayUtils.convert(oneElementItemSets, transactions);
                 var oneCItemSets = self.findItemSetsMinSupportSatisfied(convertBinary, transactions, convertBinary, self.minSupport, transactionsLenght);
                 var currentLItemSets = oneCItemSets.filteredItemSets;
@@ -282,93 +282,17 @@
 
 
             ArrayUtils.toFixedSizeJoinedSets = function(itemSets, length) {
-                //链接操作，此部只是遍历并判断其两项之间是否有差异，如果有的话则合并两项并掉用toStringSet方法去除相同项，生成链接joinedSet
-                //此处可以实现第二步链接操作优化
-
                 var joinedSetArray = [];
-                var mergedArray = [];
-                for (var i = 0; i < itemSets.length; i++) {
-                    var rowsItem = itemSets[i];
-                    mergedArray = mergedArray.concat(rowsItem);
-                }
-                //get uniq
-                var oneItemArray = _.uniq(mergedArray);
-                var calcutedItems = [];
-                var itemCountLowerLength = [];
-                for (var j = 0; j < oneItemArray.length; j++) {
-                    var count = 0;
-                    for (var k = 0; k < mergedArray.length; k++) {
-                        if (oneItemArray[j] === mergedArray[k]) {
-                            count += 1;
+                itemSets.forEach(function (itemSetA) {
+                    itemSets.forEach(function (itemSetB) {
+                        if (ArrayUtils.getDiffArray(itemSetA, itemSetB).length > 0) {
+                            var mergedArray = [].concat(itemSetA).concat(itemSetB), joinedSet = ArrayUtils.toStringSet(mergedArray);
+                            if (joinedSet.length === length)
+                                joinedSetArray.push(joinedSet);
                         }
-                    }
-                    var singleCalcutedItems = {
-                        itemSet: oneItemArray[j].toString(),
-                        count: count
-                    }
-                    if (count >= length - 1) {
-                        calcutedItems.push(singleCalcutedItems);
-                    } else {
-                        itemCountLowerLength.push(oneItemArray[j].toString());
-                    }
-                }
-
-                //clear data form itemSets
-
-                for (var f = 0; f < itemSets.length; f++) {
-                    for (var l = 0; l < itemCountLowerLength.length; l++) {
-                        if (!itemSets[f]) {
-                            break;
-                        }
-                        var index = itemSets[f].indexOf(itemCountLowerLength[l].toString());
-                        if (index !== -1) {
-                            itemSets.splice(f, 1);
-                        }
-                    };
-                }
-
-                //get create joinedsetArray
-
-                for (var s = 0; s < itemSets.length; s++) {
-                    var itemSetA = itemSets[s];
-                    var iLastItem = itemSetA[itemSetA.length - 1];
-                    if (calcutedItems.length === 0) {
-                        break;
-                    }
-                    for (var q = 0; q < calcutedItems.length; q++) {
-                        var itemSetB = calcutedItems[q].itemSet;
-                        if (iLastItem < itemSetB) {
-                            var mergedArray = [].concat(itemSetA).concat(itemSetB);
-                            if (mergedArray.length === length) {
-                                joinedSetArray.push(mergedArray);
-                            }
-                        }
-                    }
-                }
-
-                //如果链接后的集合的k－1子集不是频繁的话，则剔除掉
-                if (length > 2) {
-                    for (var e = 0; e < joinedSetArray.length; e++) {
-                        var sunKItemSetsNum = Combinatorics.combination(joinedSetArray[e], joinedSetArray[e].length - 1);
-                        var sunKItemSets = sunKItemSetsNum.toArray();
-                        var containFlag = false;
-                        for (var h = 0; h < sunKItemSets.length; h++) {
-                            // if(itemSets.indexOf(sunKItemSets[h]) === -1){
-                            //     removeFlag = true;
-                            // }
-                            for (var hh = 0; hh < itemSets.length; hh++) {
-                                if (itemSets[hh].toString() === sunKItemSets[h].toString()) {
-                                    containFlag = true;
-                                    // break;
-                                }
-                            }
-                        }
-                        if (!containFlag) {
-                            joinedSetArray.splice(e, 1);
-                        }
-                    };
-                }
-                return joinedSetArray;
+                    });
+                });
+            return ArrayUtils.toArraySet(joinedSetArray);
                 // return ArrayUtils.toArraySet(joinedSetArray);
             };
 
@@ -450,7 +374,7 @@
                             convertData.push(convertBinary[j]);
                         }
                     };
-
+                    
                 };
                 var minItem = _.min(convertData, function(item){
                     return item.length;
