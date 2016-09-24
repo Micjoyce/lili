@@ -323,7 +323,7 @@
                 var self = this;
                 var tempArray = [];
                 for (var i = 0; i < itemXToZero.length; i++) {
-                    var andCalcu = itemXToZero[i] * itemYBitArray[i];
+                    var andCalcu = itemXToZero[i] & itemYBitArray[i];
                     tempArray.push(andCalcu);
                 }
                 var compareToDecimal = self.toDecimal(tempArray.join(""));
@@ -363,11 +363,13 @@
                 return metureArray;
             }
             ArrayUtils.createMeture = function(oneItemFrequency) {
-                var tempArray = [];
-                oneItemFrequency.forEach(function(oneItem) {
-                    tempArray.push(0);
-                });
-                return tempArray;
+                // var tempArray = [];
+                // oneItemFrequency.forEach(function(oneItem) {
+                //     tempArray.push(0);
+                // });
+                // return tempArray;
+                var result = new Int8Array(oneItemFrequency.length);
+                return result
             }
             ArrayUtils.cItemToKitem = function(cItems, bitNums, minSupport, oneItemFrequency, originLen, lItemPositions, oneItemFrequecyPositionObject) {
                 var self = this;

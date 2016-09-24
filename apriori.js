@@ -1,4 +1,5 @@
 var Apriori = require('./apriori/zhaoguanbao-bitxor');
+// var Apriori = require('./apriori/I8-bit-improve-apriori-one');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-raw-calc');
 // var Apriori = require('./apriori/apriori');
 // new Apriori.Algorithm(0.2, 0.6, true).showAnalysisResultFromFile('test.csv');
@@ -8,7 +9,7 @@ var Apriori = require('./apriori/zhaoguanbao-bitxor');
 // new Apriori.Algorithm(0.4, 0.6, true).showAnalysisResultFromFile('database/T40I10D100K.csv');
 // new Apriori.Algorithm(0.02, 0.6, true).showAnalysisResultFromFile('database/T1014D100K.csv');
 // new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('database/transaction-5000.csv');
-new Apriori.Algorithm(0.6, 0.6, true).showAnalysisResultFromFile('database/mush-data.csv');
+new Apriori.Algorithm(0.5, 0.6, true).showAnalysisResultFromFile('database/mush-data.csv');
 
 
 
