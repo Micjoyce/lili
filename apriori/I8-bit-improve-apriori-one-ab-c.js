@@ -81,9 +81,7 @@
                     console.log('Before bitArray: ' + self.getTime(beforeMillis) + ' ms');
                 }
                 // console.log(bitArray.length)
-                var toBitNumberArr = ArrayUtils.bitArrayToBitNumber(bitArray);
-                var bitNumbers = toBitNumberArr.temp;
-                var decimalNumSplitArr = toBitNumberArr.decimalNumSplitArr;
+                var bitNumbers = ArrayUtils.bitArrayToBitNumber(bitArray);
                  //运行时间
                 if (self.debugMode) {
                     var startTime = self.getTime(beforeMillis);
@@ -105,7 +103,7 @@
                 while (KitemArray.length !== 0) {
                     // ki －－》 c(i+1)
                     var KitemToCitemArray = ArrayUtils.createJoinSets(KitemArray, oneItemFrequencyResult);
-                    var kItemAndStatistic = ArrayUtils.cItemToKitem(KitemToCitemArray, decimalNumSplitArr, self.minSupport, oneItemFrequencyResult, originLen, lItemPositions, oneItemFrequecyPositionObject)
+                    var kItemAndStatistic = ArrayUtils.cItemToKitem(KitemToCitemArray, bitNumbers, self.minSupport, oneItemFrequencyResult, originLen, lItemPositions, oneItemFrequecyPositionObject)
                     lItemPositions = kItemAndStatistic.position;
                     KitemArray = kItemAndStatistic.kItem;
                     frequentItemSets = frequentItemSets.concat(kItemAndStatistic.statisticArray)
@@ -186,10 +184,9 @@
                     var bitArray = [];
                     var initialTime = new Date().getTime();
                     originTransactions.forEach(function(transaction, tIndex) {
-
-                        transaction.forEach(function(item, index) {
+                        var rowArray = [];
+                        transaction.forEach(function(item) {
                             if (self.isSubItem(item, transaction)) {
-                              // 如果存在，则此位置为1
                                 if (!positionObj[item.toString()]) {
                                     positionObj[item.toString()] = [];
                                     positionObj[item.toString()].push(tIndex);
@@ -200,6 +197,7 @@
                                     }
                                 }
                             }
+
                         });
                     });
                     console.log(new Date().getTime() - initialTime)
@@ -277,29 +275,17 @@
             ArrayUtils.bitArrayToBitNumber = function(bitArray) {
                     var temp = [];
                     var self = this;
-                    var decimalNumSplitArr = [];
-                    var len = Math.ceil(bitArray[0].length / 32);
                     bitArray.forEach(function(item) {
                         var joinArray = item.join('');
-                        var itemBitNum = [];
-                        for (var i = 0; i < len; i++) {
-                          var subItem = joinArray.substr(i * 32, 32);
-                          itemBitNum.push(parseInt(subItem, 2));
-                        }
-                        decimalNumSplitArr.push(itemBitNum);
                         var bitNum = self.toDecimal(joinArray);
                         temp.push(bitNum);
                     });
-                    return {
-                      temp: temp,
-                      decimalNumSplitArr: decimalNumSplitArr
-                    }
+                    return temp;
                 }
                 //ki --> Ci+1
             ArrayUtils.createJoinSets = function(itemSets, oneItemFrequency) {
                 var self = this;
                 var tempArray = [];
-                var startTime = new Date();
                 for (var i = 0; i < itemSets.length - 1; i++) {
                     var itemX = itemSets[i];
                     // 由于之前做过排序处理，这里的 j 可以从 i+1进行循环便利，及实现itemSets从此项目开始与后面向比较，不需要与排在其
@@ -321,7 +307,6 @@
                         }
                     }
                 }
-                console.log("---====>", startTime - new Date());
                 return tempArray;
             }
             ArrayUtils.joinItemSet = function(itemX, itemY) {
@@ -337,20 +322,14 @@
             ArrayUtils.createJoinSetsCompare = function(itemXToZero, itemYBitArray) {
                 var self = this;
                 var tempArray = [];
-                // for (var i = 0; i < itemXToZero.length; i++) {
-                //     var andCalcu = itemXToZero[i] & itemYBitArray[i];
-                //     tempArray.push(andCalcu);
-                // }
-                // var compareToDecimal = self.toDecimal(tempArray.join(""));
-                // var itemXToDecimal = self.toDecimal(itemXToZero.join(""));
-                // if (itemXToDecimal === compareToDecimal) {
-                //     return true;
-                // }
-                // return false;
+                for (var i = 0; i < itemXToZero.length; i++) {
+                    var andCalcu = itemXToZero[i] & itemYBitArray[i];
+                    tempArray.push(andCalcu);
+                }
+                var compareToDecimal = self.toDecimal(tempArray.join(""));
                 var itemXToDecimal = self.toDecimal(itemXToZero.join(""));
-                var itemYToDecimal = self.toDecimal(itemYBitArray.join(""));
-                if ((itemXToDecimal & itemYToDecimal) === itemXToDecimal) {
-                  return true;
+                if (itemXToDecimal === compareToDecimal) {
+                    return true;
                 }
                 return false;
             }
@@ -392,7 +371,7 @@
                 var result = new Int8Array(oneItemFrequency.length);
                 return result
             }
-            ArrayUtils.cItemToKitem = function(cItems, decimalNumSplitArr, minSupport, oneItemFrequency, originLen, lItemPositions, oneItemFrequecyPositionObject) {
+            ArrayUtils.cItemToKitem = function(cItems, bitNums, minSupport, oneItemFrequency, originLen, lItemPositions, oneItemFrequecyPositionObject) {
                 var self = this;
                 var localFrequencies = {};
                 var binLength = oneItemFrequency.length;
@@ -416,14 +395,12 @@
                     // //   'c-f-g': [ 0, 5, 12, 14, 16, 18, 20, 22 ],
                     // //   'd-e-f': [ 10, 11, 13, 15, 17, 19, 21 ],
                     // //   'e-f-g': [ 0, 12, 14, 16, 18, 20, 22 ] }
-                    // //oneItemFrequecyPositionObject:
-                    // //   { a: [ 0, 1, 3, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
-                    // //     c: [ 0, 2, 5, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
-                    // //     d: [ 3, 5, 6, 10, 11, 13, 15, 17, 19, 21 ],
-                    // //     e: [ 0, 2, 4, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
-                    // //     f: [ 0, 1, 2, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
-                    // //     g: [ 0, 5, 12, 14, 16, 18, 20, 22 ]
-                    // //   }
+                    // //oneItemFrequecyPositionObject:   { a: [ 0, 1, 3, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
+                    // //   c: [ 0, 2, 5, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
+                    // //   d: [ 3, 5, 6, 10, 11, 13, 15, 17, 19, 21 ],
+                    // //   e: [ 0, 2, 4, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+                    // //   f: [ 0, 1, 2, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+                    // //   g: [ 0, 5, 12, 14, 16, 18, 20, 22 ] }
                     // //positions: [ 0, 2, 12, 14, 16, 18, 20, 22 ]
                     // // ===========--------================
                     // var tempPosition = [];
@@ -440,25 +417,23 @@
                     //         frequencyCount += andResult;
                     //     }
                     // });
-
-                    var tempPosition = [];
                     var frequencyCount = 0;
 
                     var subKitemArrStr = cItem.slice(0, cItem.length - 1).join("-");
                     var lastitemStr = cItem.slice(-1).toString();
 
                     var subKitemArrPositions = lItemPositions[subKitemArrStr];
+                    // 如果 n-1项为非频繁项集 则进行下一步计算
+                    if (!subKitemArrPositions) {
+                      console.log(cItem, "----------");
+                      return;
+                    }
                     var lastItemPositions = oneItemFrequecyPositionObject[lastitemStr];
-                    console.log(subKitemArrPositions, lastItemPositions, "subKitemArrPositions, lastItemPositions");
-                    subKitemArrPositions.forEach(function(position, index){
 
-                      var itemNumArr = decimalNumSplitArr[position];
+                    var interSectionPositions =  _.intersection(subKitemArrPositions, lastItemPositions);
 
-
-                    });
-
-                    localPositions[cItem.join("-").toString()] = tempPosition;
-                    localFrequencies[cItem.join("-").toString()] = frequencyCount;
+                    localPositions[cItem.join("-").toString()] = interSectionPositions;
+                    localFrequencies[cItem.join("-").toString()] = interSectionPositions.length;
                 });
                 // 移除频繁度小于设定值的项目
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
