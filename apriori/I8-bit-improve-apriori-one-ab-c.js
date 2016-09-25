@@ -425,7 +425,6 @@
                     var subKitemArrPositions = lItemPositions[subKitemArrStr];
                     // 如果 n-1项为非频繁项集 则进行下一步计算
                     if (!subKitemArrPositions) {
-                      console.log(cItem, "----------");
                       return;
                     }
                     var lastItemPositions = oneItemFrequecyPositionObject[lastitemStr];
