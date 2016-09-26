@@ -1,9 +1,10 @@
 // var Apriori = require('./apriori/zhaoguanbao-bitxor');
-// var Apriori = require('./apriori/zhaoguanbao-bitxor-raw-calc');
+var Apriori = require('./apriori/zhaoguanbao-bitxor-raw-calc');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-raw-calc');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c');
-var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup');
+// var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup');
+// var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num');
 // var Apriori = require('./apriori/apriori');
 // new Apriori.Algorithm(0.2, 0.6, true).showAnalysisResultFromFile('test.csv');
 // new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('source.csv');
