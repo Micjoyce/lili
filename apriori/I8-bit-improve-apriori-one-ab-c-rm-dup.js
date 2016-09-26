@@ -102,7 +102,7 @@
                 var lItemPositions = oneItemFrequecyPositionObject;
                 while (KitemArray.length !== 0) {
                     // ki －－》 c(i+1)
-                    var KitemToCitemArray = ArrayUtils.createJoinSets(KitemArray, oneItemFrequencyResult);
+                    var KitemToCitemArray = ArrayUtils.createJoinSets(KitemArray, oneItemFrequencyResult,lItemPositions);
                     var kItemAndStatistic = ArrayUtils.cItemToKitem(KitemToCitemArray, bitNumbers, self.minSupport, oneItemFrequencyResult, originLen, lItemPositions, oneItemFrequecyPositionObject)
                     lItemPositions = kItemAndStatistic.position;
                     KitemArray = kItemAndStatistic.kItem;
@@ -283,11 +283,20 @@
                     return temp;
                 }
                 //ki --> Ci+1
-            ArrayUtils.createJoinSets = function(itemSets, oneItemFrequency) {
+            ArrayUtils.createJoinSets = function(itemSets, oneItemFrequency, lItemPositions) {
                 var self = this;
                 var tempArray = [];
+                console.log(itemSets.length, "itemSets");
+                var isTwoItem = false;
+                if (itemSets[0] && itemSets[0].length <= 2) {
+                  isTwoItem = true;
+                }
                 for (var i = 0; i < itemSets.length - 1; i++) {
                     var itemX = itemSets[i];
+                    // 如果此项目不是频繁项集，则进行循环
+                    // if (!isTwoItem ) {
+                    //   console.log(this.isSubFrenItems(itemX, lItemPositions), "===K===========");
+                    // }
                     // 由于之前做过排序处理，这里的 j 可以从 i+1进行循环便利，及实现itemSets从此项目开始与后面向比较，不需要与排在其
                     // 队列之前的作比较
                     // 将最后为 1 的位置为 0, 110100
@@ -307,7 +316,47 @@
                         }
                     }
                 }
+                console.log(tempArray.length, "============");
+                tempArray = this.removeduplicateCitem(tempArray, lItemPositions)
+                console.log(tempArray.length, "------------======");
                 return tempArray;
+            }
+
+            ArrayUtils.removeduplicateCitem = function(tempArray, lItemPositions){
+                if (!tempArray || !tempArray[0] || tempArray[0].length < 3) {
+                  return tempArray
+                }
+                // 判断子集是否为频繁项集
+                var fixDuplicationResult = []
+                for (var i = 0; i < tempArray.length; i++) {
+                  var cItem = tempArray[i];
+                  if(this.isSubFrenItems(cItem, lItemPositions) === true){
+                    fixDuplicationResult.push(cItem);
+                  }
+                }
+                return fixDuplicationResult;
+            }
+
+            ArrayUtils.isSubFrenItems = function(cItem, lItemPositions) {
+              var kItem = this.cItemsKitem(cItem);
+              var allFrenItem = true;
+              for (var i = 0; i < kItem.length; i++) {
+                var item = kItem[i].join('-');
+                if (!lItemPositions[item]) {
+                  return false;
+                }
+              }
+              return true;
+            }
+            ArrayUtils.cItemsKitem = function (cItem){
+              if (!_.isArray(cItem)) {
+                console.log("Not a Array cItem");
+              }
+              var len = cItem.length - 1;
+              var result = [];
+              // [a,b,c] --> [[a,b], [a,c], [b,c]]
+              var cmb = Combinatorics.combination(cItem, len);
+              return cmb.toArray();
             }
             ArrayUtils.joinItemSet = function(itemX, itemY) {
                 var result = []
@@ -377,48 +426,62 @@
                 var binLength = oneItemFrequency.length;
                 var localPositions = {};
                 cItems.forEach(function(cItem) {
-                    var indexArr = [];
-                    indexArr = self.getCItemIndexArr(cItem, oneItemFrequency);
+                    // var indexArr = [];
+                    // indexArr = self.getCItemIndexArr(cItem, oneItemFrequency);
+                    // var frequencyCount = 0;
+                    // var positions = self.getMinPositionArray(cItem, lItemPositions, oneItemFrequecyPositionObject);
+                    // // 从kitem 各项中找出出现次数最短的 位置数组
+                    // // ===========--------================
+                    // //cItem: [ 'c', 'e', 'f', 'g' ]
+                    // //lItemPositions:  { 'a-c-e': [ 0, 6, 7, 12, 14, 16, 18, 20, 22 ],
+                    // //   'a-c-f': [ 0, 9, 12, 14, 16, 18, 20, 22 ],
+                    // //   'a-c-g': [ 0, 12, 14, 16, 18, 20, 22 ],
+                    // //   'a-e-f': [ 0, 12, 14, 16, 18, 20, 22 ],
+                    // //   'a-e-g': [ 0, 12, 14, 16, 18, 20, 22 ],
+                    // //   'a-f-g': [ 0, 12, 14, 16, 18, 20, 22 ],
+                    // //   'c-e-f': [ 0, 2, 12, 14, 16, 18, 20, 22 ],
+                    // //   'c-e-g': [ 0, 12, 14, 16, 18, 20, 22 ],
+                    // //   'c-f-g': [ 0, 5, 12, 14, 16, 18, 20, 22 ],
+                    // //   'd-e-f': [ 10, 11, 13, 15, 17, 19, 21 ],
+                    // //   'e-f-g': [ 0, 12, 14, 16, 18, 20, 22 ] }
+                    // //oneItemFrequecyPositionObject:   { a: [ 0, 1, 3, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
+                    // //   c: [ 0, 2, 5, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
+                    // //   d: [ 3, 5, 6, 10, 11, 13, 15, 17, 19, 21 ],
+                    // //   e: [ 0, 2, 4, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+                    // //   f: [ 0, 1, 2, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+                    // //   g: [ 0, 5, 12, 14, 16, 18, 20, 22 ] }
+                    // //positions: [ 0, 2, 12, 14, 16, 18, 20, 22 ]
+                    // // ===========--------================
+                    // var tempPosition = [];
+                    // positions.forEach(function(position, index) {
+                    //     var bitNum = bitNums[position];
+                    //     var binArr = self.toBin(bitNum, true, binLength);
+                    //     // 将压缩后的位表（十进制转为二进制）
+                    //     // 根据最短的position，遍历位表（二进制）进行 "与"" 运算，判断在position中是否同时含有各项
+                    //     // 其相当于到position中的每一行查找是否存在各单元项目是否都存在，如果存在则 频繁度 ＋1， 并且将此
+                    //     // position 值保存到tempPosition数组中，形成 lItemPositions
+                    //     var andResult = self.andCalcu(indexArr, binArr);
+                    //     if (andResult === 1) {
+                    //         tempPosition.push(position);
+                    //         frequencyCount += andResult;
+                    //     }
+                    // });
                     var frequencyCount = 0;
-                    var positions = self.getMinPositionArray(cItem, lItemPositions, oneItemFrequecyPositionObject);
-                    // 从kitem 各项中找出出现次数最短的 位置数组
-                    // ===========--------================
-                    //cItem: [ 'c', 'e', 'f', 'g' ]
-                    //lItemPositions:  { 'a-c-e': [ 0, 6, 7, 12, 14, 16, 18, 20, 22 ],
-                    //   'a-c-f': [ 0, 9, 12, 14, 16, 18, 20, 22 ],
-                    //   'a-c-g': [ 0, 12, 14, 16, 18, 20, 22 ],
-                    //   'a-e-f': [ 0, 12, 14, 16, 18, 20, 22 ],
-                    //   'a-e-g': [ 0, 12, 14, 16, 18, 20, 22 ],
-                    //   'a-f-g': [ 0, 12, 14, 16, 18, 20, 22 ],
-                    //   'c-e-f': [ 0, 2, 12, 14, 16, 18, 20, 22 ],
-                    //   'c-e-g': [ 0, 12, 14, 16, 18, 20, 22 ],
-                    //   'c-f-g': [ 0, 5, 12, 14, 16, 18, 20, 22 ],
-                    //   'd-e-f': [ 10, 11, 13, 15, 17, 19, 21 ],
-                    //   'e-f-g': [ 0, 12, 14, 16, 18, 20, 22 ] }
-                    //oneItemFrequecyPositionObject:   { a: [ 0, 1, 3, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
-                    //   c: [ 0, 2, 5, 6, 7, 8, 9, 12, 14, 16, 18, 20, 22 ],
-                    //   d: [ 3, 5, 6, 10, 11, 13, 15, 17, 19, 21 ],
-                    //   e: [ 0, 2, 4, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
-                    //   f: [ 0, 1, 2, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
-                    //   g: [ 0, 5, 12, 14, 16, 18, 20, 22 ] }
-                    //positions: [ 0, 2, 12, 14, 16, 18, 20, 22 ]
-                    // ===========--------================
-                    var tempPosition = [];
-                    positions.forEach(function(position, index) {
-                        var bitNum = bitNums[position];
-                        var binArr = self.toBin(bitNum, true, binLength);
-                        // 将压缩后的位表（十进制转为二进制）
-                        // 根据最短的position，遍历位表（二进制）进行 "与"" 运算，判断在position中是否同时含有各项
-                        // 其相当于到position中的每一行查找是否存在各单元项目是否都存在，如果存在则 频繁度 ＋1， 并且将此
-                        // position 值保存到tempPosition数组中，形成 lItemPositions
-                        var andResult = self.andCalcu(indexArr, binArr);
-                        if (andResult === 1) {
-                            tempPosition.push(position);
-                            frequencyCount += andResult;
-                        }
-                    });
-                    localPositions[cItem.join("-").toString()] = tempPosition;
-                    localFrequencies[cItem.join("-").toString()] = frequencyCount;
+
+                    var subKitemArrStr = cItem.slice(0, cItem.length - 1).join("-");
+                    var lastitemStr = cItem.slice(-1).toString();
+
+                    var subKitemArrPositions = lItemPositions[subKitemArrStr];
+                    // 如果 n-1项为非频繁项集 则进行下一步计算
+                    if (!subKitemArrPositions) {
+                      return;
+                    }
+                    var lastItemPositions = oneItemFrequecyPositionObject[lastitemStr];
+
+                    var interSectionPositions =  _.intersection(subKitemArrPositions, lastItemPositions);
+
+                    localPositions[cItem.join("-").toString()] = interSectionPositions;
+                    localFrequencies[cItem.join("-").toString()] = interSectionPositions.length;
                 });
                 // 移除频繁度小于设定值的项目
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
