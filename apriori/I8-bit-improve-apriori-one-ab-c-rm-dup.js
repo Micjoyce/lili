@@ -286,17 +286,9 @@
             ArrayUtils.createJoinSets = function(itemSets, oneItemFrequency, lItemPositions) {
                 var self = this;
                 var tempArray = [];
-                console.log(itemSets.length, "itemSets");
-                var isTwoItem = false;
-                if (itemSets[0] && itemSets[0].length <= 2) {
-                  isTwoItem = true;
-                }
+                var startTime = new Date();
                 for (var i = 0; i < itemSets.length - 1; i++) {
                     var itemX = itemSets[i];
-                    // 如果此项目不是频繁项集，则进行循环
-                    // if (!isTwoItem ) {
-                    //   console.log(this.isSubFrenItems(itemX, lItemPositions), "===K===========");
-                    // }
                     // 由于之前做过排序处理，这里的 j 可以从 i+1进行循环便利，及实现itemSets从此项目开始与后面向比较，不需要与排在其
                     // 队列之前的作比较
                     // 将最后为 1 的位置为 0, 110100
@@ -316,9 +308,8 @@
                         }
                     }
                 }
-                console.log(tempArray.length, "============");
                 tempArray = this.removeduplicateCitem(tempArray, lItemPositions)
-                console.log(tempArray.length, "------------======");
+                console.log(new Date() - startTime, "createJoinSets and Remove duplication item------------======");
                 return tempArray;
             }
 
@@ -339,11 +330,11 @@
 
             ArrayUtils.isSubFrenItems = function(cItem, lItemPositions) {
               var kItem = this.cItemsKitem(cItem);
-              var allFrenItem = true;
               for (var i = 0; i < kItem.length; i++) {
                 var item = kItem[i].join('-');
                 if (!lItemPositions[item]) {
                   return false;
+                  break;
                 }
               }
               return true;
@@ -412,19 +403,20 @@
                 return metureArray;
             }
             ArrayUtils.createMeture = function(oneItemFrequency) {
-                // var tempArray = [];
-                // oneItemFrequency.forEach(function(oneItem) {
-                //     tempArray.push(0);
-                // });
-                // return tempArray;
-                var result = new Int8Array(oneItemFrequency.length);
-                return result
+                var tempArray = [];
+                oneItemFrequency.forEach(function(oneItem) {
+                    tempArray.push(0);
+                });
+                return tempArray;
+                // var result = new Int8Array(oneItemFrequency.length);
+                // return result
             }
             ArrayUtils.cItemToKitem = function(cItems, bitNums, minSupport, oneItemFrequency, originLen, lItemPositions, oneItemFrequecyPositionObject) {
                 var self = this;
                 var localFrequencies = {};
                 var binLength = oneItemFrequency.length;
                 var localPositions = {};
+                var startTime = new Date();
                 cItems.forEach(function(cItem) {
                     // var indexArr = [];
                     // indexArr = self.getCItemIndexArr(cItem, oneItemFrequency);
@@ -485,6 +477,7 @@
                 });
                 // 移除频繁度小于设定值的项目
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
+                console.log( 'cItemToKitem ---------------------', new Date() - startTime);
                 return result;
             }
             ArrayUtils.getMinPositionArray = function(cItem, lItemPositions, oneItemFrequecyPositionObject) {
