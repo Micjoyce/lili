@@ -83,22 +83,22 @@
                 var columnsNum = convertResult.columnsNum;
                 var columnsMeture = convertResult.metureBitArrNum
                  //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before bitArray: ' + self.getTime(beforeMillis) + ' ms');
-                }
-                // console.log(bitArray.length)
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before bitArray: ' + self.getTime(beforeMillis) + ' ms');
+                // }
+                // // console.log(bitArray.length)
                 var bitNumbers = ArrayUtils.bitArrayToBitNumber(bitArray);
-                 //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before bitNumbers: ' + self.getTime(beforeMillis) + ' ms');
-                }
-                //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before finding item sets: ' + self.getTime(beforeMillis) + ' ms');
-                }
+                //  //运行时间
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before bitNumbers: ' + self.getTime(beforeMillis) + ' ms');
+                // }
+                // //运行时间
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before finding item sets: ' + self.getTime(beforeMillis) + ' ms');
+                // }
 
 
                 // start here
@@ -158,7 +158,7 @@
                         require("fs").writeFile(resultFilename, csv, function(err) {
                           if (err) throw err;
                           if (typeof callback === "function") {
-                                callback();
+                                callback(calcuTime);
                             }
                         });
                     });

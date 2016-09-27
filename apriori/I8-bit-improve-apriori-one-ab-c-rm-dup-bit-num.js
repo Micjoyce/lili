@@ -77,22 +77,22 @@
                 // console.log(oneItemFrequencyResult);
                 var bitArray = ArrayUtils.convertPositionToBitArray(oneItemFrequecyPositionObject, oneItemFrequencyResult);
                  //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before bitArray: ' + self.getTime(beforeMillis) + ' ms');
-                }
-                // console.log(bitArray.length)
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before bitArray: ' + self.getTime(beforeMillis) + ' ms');
+                // }
+                // // console.log(bitArray.length)
                 var bitNumbers = ArrayUtils.bitArrayToBitNumber(bitArray);
-                 //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before bitNumbers: ' + self.getTime(beforeMillis) + ' ms');
-                }
-                //运行时间
-                if (self.debugMode) {
-                    var startTime = self.getTime(beforeMillis);
-                    console.log('Before finding item sets: ' + self.getTime(beforeMillis) + ' ms');
-                }
+                //  //运行时间
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before bitNumbers: ' + self.getTime(beforeMillis) + ' ms');
+                // }
+                // //运行时间
+                // if (self.debugMode) {
+                //     var startTime = self.getTime(beforeMillis);
+                //     console.log('Before finding item sets: ' + self.getTime(beforeMillis) + ' ms');
+                // }
 
 
 
@@ -144,7 +144,7 @@
                         require("fs").writeFile(resultFilename, csv, function(err) {
                             if (err) throw err;
                             if (typeof callback === "function") {
-                                callback();
+                                callback(calcuTime);
                             }
                         });
                     });
