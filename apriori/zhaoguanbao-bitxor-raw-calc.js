@@ -43,10 +43,11 @@
         Apriori.AssociationRule = AssociationRule;
 
         var Algorithm = (function() {
-            function Algorithm(minSupport, minConfidence, debugMode) {
+            function Algorithm(minSupport, minConfidence, debugMode, resultFileUrl) {
                 this.minSupport = minSupport ? minSupport === 0 ? 0 : minSupport : 0.15;
                 this.minConfidence = minConfidence ? minConfidence === 0 ? 0 : minConfidence : 0.6;
                 this.debugMode = debugMode || false;
+                this.resultFileUrl = resultFileUrl;
             }
             Algorithm.prototype.analyze = function(transactions) {
                 var self = this;
@@ -115,11 +116,11 @@
                     // 删除包含非频繁子集的候选项集
                     KitemToCitemArray = ArrayUtils.removeduplicateCitem(KitemToCitemArray, KitemArray);
 
-                    console.log("KitemToCitemArray ==>", startDate - new Date());
+                    // console.log("KitemToCitemArray ==>", startDate - new Date());
                     var kItemAndStatistic = ArrayUtils.cItemToKitem(KitemToCitemArray, bitNumbers,columnsNum, self.minSupport, oneItemFrequencyResult, originLen, coluItems,columnsMeture, lItemPositions, oneItemFrequecyPositionObject)
                     lItemPositions = kItemAndStatistic.position;
                     KitemArray = kItemAndStatistic.kItem;
-                    console.log("kItemAndStatistic ==>",KitemArray.length, startDate - new Date());
+                    // console.log("kItemAndStatistic ==>",KitemArray.length, startDate - new Date());
                     frequentItemSets = frequentItemSets.concat(kItemAndStatistic.statisticArray)
                 }
                 if (self.debugMode) {
@@ -134,8 +135,9 @@
 
             };
 
-            Algorithm.prototype.showAnalysisResultFromFile = function(filename) {
+            Algorithm.prototype.showAnalysisResultFromFile = function(filename, callback) {
                 var self = this;
+                var resultFilename = self.formatFileName(filename);
                 require('fs').readFile(filename, 'utf8', function(err, data) {
                     if (err)
                         throw err;
@@ -152,8 +154,12 @@
                         fileds: ['key', 'value']
                     }, function(err, csv) {
                         if (err) throw err;
-                        require("fs").writeFile("support.csv", csv, function(err) {
-                            if (err) throw err;
+                        // console.log("计算结果保存至:",resultFilename);
+                        require("fs").writeFile(resultFilename, csv, function(err) {
+                          if (err) throw err;
+                          if (typeof callback === "function") {
+                                callback();
+                            }
                         });
                     });
                 });
@@ -161,6 +167,22 @@
 
             Algorithm.prototype.getTime = function(initial) {
                 return new Date().getTime() - initial;
+            };
+
+            Algorithm.prototype.formatFileName = function(filename) {
+                // filename database/mush-data.csv
+                var originFile = filename.split("/").slice(-1).toString().split(".")[0].toString();
+
+                return this.resultFileUrl + "_" + originFile + "_" + this.addZero() + ".csv";
+            };
+
+            Algorithm.prototype.addZero = function() {
+                var fixLen = 4;
+                var str = (this.minSupport * Math.pow(10, fixLen - 1)).toString();
+                for (var i = 0; i < 4 - str.length; i++) {
+                    str = "0" + str;
+                }
+                return str;
             };
             return Algorithm;
         })();
@@ -350,7 +372,7 @@
                   resultCitems.push(cItem);
                 }
               }
-              console.log("非频繁子集剔除",KitemToCitemArray.length, resultCitems.length);
+              // console.log("非频繁子集剔除",KitemToCitemArray.length, resultCitems.length);
               return resultCitems;
             }
 
@@ -507,7 +529,7 @@
               for (var i = 0; i < itemBitNum1.length; i++) {
                 var innerResult = itemBitNum1[i] &  itemBitNum2[i];
                 if (innerResult < 0 ) {
-                  console.log(itemBitNum1[i] ,  itemBitNum2[i]);
+                  // console.log(itemBitNum1[i] ,  itemBitNum2[i]);
                 }
                 andResult.push(innerResult);
               }

@@ -43,10 +43,11 @@
         Apriori.AssociationRule = AssociationRule;
 
         var Algorithm = (function() {
-            function Algorithm(minSupport, minConfidence, debugMode) {
+            function Algorithm(minSupport, minConfidence, debugMode, resultFileUrl) {
                 this.minSupport = minSupport ? minSupport === 0 ? 0 : minSupport : 0.15;
                 this.minConfidence = minConfidence ? minConfidence === 0 ? 0 : minConfidence : 0.6;
                 this.debugMode = debugMode || false;
+                this.resultFileUrl = resultFileUrl;
             }
             Algorithm.prototype.analyze = function(transactions) {
                 var self = this;
@@ -120,8 +121,9 @@
 
             };
 
-            Algorithm.prototype.showAnalysisResultFromFile = function(filename) {
+            Algorithm.prototype.showAnalysisResultFromFile = function(filename, callback) {
                 var self = this;
+                var resultFilename = self.formatFileName(filename);
                 require('fs').readFile(filename, 'utf8', function(err, data) {
                     if (err)
                         throw err;
@@ -138,8 +140,12 @@
                         fileds: ['key', 'value']
                     }, function(err, csv) {
                         if (err) throw err;
-                        require("fs").writeFile("support.csv", csv, function(err) {
+                        console.log("计算结果保存至:",resultFilename);
+                        require("fs").writeFile(resultFilename, csv, function(err) {
                             if (err) throw err;
+                            if (typeof callback === "function") {
+                                callback();
+                            }
                         });
                     });
                 });
@@ -148,6 +154,23 @@
             Algorithm.prototype.getTime = function(initial) {
                 return new Date().getTime() - initial;
             };
+
+            Algorithm.prototype.formatFileName = function(filename) {
+                // filename database/mush-data.csv
+                var originFile = filename.split("/").slice(-1).toString().split(".")[0].toString();
+
+                return this.resultFileUrl + "_" + originFile + "_" + this.addZero() + ".csv";
+            };
+
+            Algorithm.prototype.addZero = function() {
+                var fixLen = 4;
+                var str = (this.minSupport * Math.pow(10, fixLen - 1)).toString();
+                for (var i = 0; i < 4 - str.length; i++) {
+                    str = "0" + str;
+                }
+                return str;
+            };
+
             return Algorithm;
         })();
         Apriori.Algorithm = Algorithm;
@@ -325,7 +348,7 @@
                     }
                 }
                 tempArray = this.removeduplicateCitem(tempArray, lItemPositions)
-                console.log(new Date() - startTime, "createJoinSets and Remove duplication item------------======");
+                // console.log(new Date() - startTime, "createJoinSets and Remove duplication item------------======");
                 return tempArray;
             }
 
@@ -500,7 +523,7 @@
                 });
                 // 移除频繁度小于设定值的项目
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
-                console.log( 'cItemToKitem ---------------------', new Date() - startTime);
+                // console.log( 'cItemToKitem ---------------------', new Date() - startTime);
                 return result;
             }
             ArrayUtils.getMinPositionArray = function(cItem, lItemPositions, oneItemFrequecyPositionObject) {
