@@ -4,16 +4,17 @@
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-raw-calc');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c');
 // var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup');
-var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num');
+// var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num');
+var Apriori = require('./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem');
 // var Apriori = require('./apriori/apriori');
 // new Apriori.Algorithm(0.2, 0.6, true).showAnalysisResultFromFile('test.csv');
 // new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('source.csv');
 // new Apriori.Algorithm(0.9, 0.6, true).showAnalysisResultFromFile('in1.csv');
 // new Apriori.Algorithm(0.15, 0.6, true).showAnalysisResultFromFile('dataset.csv');
 // new Apriori.Algorithm(0.4, 0.6, true).showAnalysisResultFromFile('database/T40I10D100K.csv');
-// new Apriori.Algorithm(0.10, 0.6, true, './result-data-0927/zhaoguanbao-bitxor-raw-calc').showAnalysisResultFromFile('database/T1014D100K.csv');
+// new Apriori.Algorithm(0.10, 0.6, true, './test-result/support').showAnalysisResultFromFile('database/T1014D100K.csv');
 // new Apriori.Algorithm(0.3, 0.6, true).showAnalysisResultFromFile('database/transaction-5000.csv');
-new Apriori.Algorithm(0.3, 0.6, true, './result-data-0927/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num').showAnalysisResultFromFile('database/mush-data.csv');
+new Apriori.Algorithm(0.3, 0.6, true, './test-result/support').showAnalysisResultFromFile('database/mush-data.csv');
 
 
 
@@ -38,7 +39,7 @@ new Apriori.Algorithm(0.3, 0.6, true, './result-data-0927/I8-bit-improve-apriori
 
 // var async = require("async");
 // var json2csv = require('json2csv');
-// var statisticData = [];	
+// var statisticData = [];
 
 
 // async.eachLimit(config.methods,1,function(method, cb){
@@ -96,4 +97,3 @@ new Apriori.Algorithm(0.3, 0.6, true, './result-data-0927/I8-bit-improve-apriori
 //         });
 // 	}
 // })
-
