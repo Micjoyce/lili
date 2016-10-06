@@ -321,44 +321,92 @@
                 // if (itemSets && itemSets[0] && _.isString(itemSets[0])) {
                 //   isOneItem = true;
                 // }
+                // change for  old method
+                // for (var i = 0; i < itemSets.length - 1; i++) {
+                //     var itemX = itemSets[i];
+                //     var itemXToZero = self.setLastOneToZero(itemX, oneItemFrequency);
+                //     for (var j = i + 1; j < itemSets.length; j++) {
+                //         var itemY = itemSets[j];
+                //         var itemYBitArray = [];
+                //         // 将后一项 以频繁一项集作为标尺，解析位 0、1位位表与前一项，进行 “与” 运算
+                //         // 当与运算之后的结果与 比较项 十进制 值相同 则表明可以链接 形成c(i+1) 项
+                //         // console.log(oneItemFrequency);
+                //         // var meture;
+                //         // if (isOneItem) {
+                //         //   meture = [itemX, itemY]
+                //         // }else {
+                //         //   meture =  _.union(itemX, itemY);
+                //         // }
+                //         // 由于之前做过排序处理，这里的 j 可以从 i+1进行循环便利，及实现itemSets从此项目开始与后面向比较，不需要与排在其
+                //         // 队列之前的作比较
+                //         // 将最后为 1 的位置为 0, 110100
+                //
+                //         // var itemXToZero = self.setLastOneToZero(itemX, meture);
+                //
+                //         itemYBitArray = self.kItemToCItemMeture(itemY, oneItemFrequency);
+                //         // itemYBitArray = self.kItemToCItemMeture(itemY, meture);
+                //         // console.log(itemXToZero, itemYBitArray);
+                //         var canJoin = self.createJoinSetsCompare(itemXToZero, itemYBitArray);
+                //         if (canJoin) {
+                //             var innerTemp = self.joinItemSet(itemX, itemY);
+                //             if (innerTemp.length > itemX.length) {
+                //                 tempArray.push(innerTemp);
+                //             }
+                //         }
+                //     }
+                // }
+                var strTempArr = [];
                 for (var i = 0; i < itemSets.length - 1; i++) {
                     var itemX = itemSets[i];
-                    var itemXToZero = self.setLastOneToZero(itemX, oneItemFrequency);
                     for (var j = i + 1; j < itemSets.length; j++) {
                         var itemY = itemSets[j];
-                        var itemYBitArray = [];
-                        // 将后一项 以频繁一项集作为标尺，解析位 0、1位位表与前一项，进行 “与” 运算
-                        // 当与运算之后的结果与 比较项 十进制 值相同 则表明可以链接 形成c(i+1) 项
-                        // console.log(oneItemFrequency);
-                        // var meture;
-                        // if (isOneItem) {
-                        //   meture = [itemX, itemY]
-                        // }else {
-                        //   meture =  _.union(itemX, itemY);
-                        // }
-                        // 由于之前做过排序处理，这里的 j 可以从 i+1进行循环便利，及实现itemSets从此项目开始与后面向比较，不需要与排在其
-                        // 队列之前的作比较
-                        // 将最后为 1 的位置为 0, 110100
-
-                        // var itemXToZero = self.setLastOneToZero(itemX, meture);
-
-                        itemYBitArray = self.kItemToCItemMeture(itemY, oneItemFrequency);
-                        // itemYBitArray = self.kItemToCItemMeture(itemY, meture);
-                        // console.log(itemXToZero, itemYBitArray);
-                        var canJoin = self.createJoinSetsCompare(itemXToZero, itemYBitArray);
-                        if (canJoin) {
-                            var innerTemp = self.joinItemSet(itemX, itemY);
-                            if (innerTemp.length > itemX.length) {
-                                tempArray.push(innerTemp);
+                        var canJoin = self.oldMethonJoinItems(itemX, itemY);
+                        if (canJoin !== false) {
+                          var str = canJoin.join("-");
+                          if (strTempArr.indexOf(str) === -1) {
+                            var filterArr = this.removeduplicateCitem([canJoin], lItemPositions);
+                            if (filterArr.length > 0) {
+                              tempArray.push(canJoin);
+                              strTempArr.push(str);
                             }
+                          }
                         }
                     }
                 }
-                tempArray = this.removeduplicateCitem(tempArray, lItemPositions)
+                // console.log(tempArray.length, "============== befor --------tempArray length");
+                // tempArray = this.removeduplicateCitem(tempArray, lItemPositions);
+                // console.log(tempArray.length, "==============tempArray length");
                 // console.log(new Date() - startTime, "createJoinSets and Remove duplication item------------======");
                 // 删除频繁项集合，统计其子项是否包含大于k项
-
                 return tempArray;
+            }
+
+            ArrayUtils.oldMethonJoinItems = function(itemX, itemY) {
+              var len = itemX.length;
+              var result = [];
+              if (len === 1) {
+                result = [itemX, itemY];
+                return result;
+              }
+              // itemX = itemX.sort(function(a, b){
+              //   return a < b;
+              // });
+              // itemY = itemY.sort(function(a, b){
+              //   return a < b;
+              // });
+              // if (itemX.slice(0, len-1).toString() === itemY.slice(0, len-1).toString() && itemX[len-1] !== itemY[len-1]) {
+              //   result = itemX;
+              //   result.push(itemY[len - 1]);
+              //   return result;
+              // }
+              result = _.union(itemX, itemY);
+              if (result.length === (itemX.length + 1)) {
+                // result.sort(function(a, b){
+                //   return a > b;
+                // });
+                return result;
+              }
+              return false;
             }
 
             ArrayUtils.filterKitemBeforeToCitemForEachItemsFreq = function(tempArray) {
