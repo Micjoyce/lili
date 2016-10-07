@@ -448,6 +448,7 @@
                     localFrequencies[cItem.join("-").toString()] = frequencyCount;
                 });
                 // 移除频繁度小于设定值的项目
+                console.log(localFrequencies, minSupport, originLen, localPositions);
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
                 return result;
             }

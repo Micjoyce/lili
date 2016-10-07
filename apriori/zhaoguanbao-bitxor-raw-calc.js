@@ -487,6 +487,7 @@
                     localFrequencies[cItem.join("-").toString()] = frequencyCount;
                 });
                 // 移除频繁度小于设定值的项目
+                // console.log(localFrequencies, minSupport, originLen, localPositions);
                 var result = self.removeLessMinSupport(localFrequencies, minSupport, originLen, localPositions)
                 return result;
             }
@@ -656,6 +657,7 @@
                 var values = _.values(oneItemFrequecyPositionObject);
                 var row = 0;
                 var bitArray = [];
+                // console.log(values, "----------------");
                 // 根据频繁一项集进行位表简历
                 values.forEach(function(value) {
                     var maxValue = _.max(value);
@@ -663,6 +665,7 @@
                         row = maxValue;
                     }
                 });
+                // console.log(row, "===--------------------");
                 var cpuIntlen = 31;
                 var columnsNum = self.generatorBitSplitNum(oneItemFrequencyResult, row, oneItemFrequecyPositionObject, cpuIntlen);
                 var metureBitArrNum = self.generatorMetureSplitNum(row, cpuIntlen);
