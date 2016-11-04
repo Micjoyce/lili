@@ -306,6 +306,15 @@
                 return bits.join("");
             }
             ArrayUtils.toDecimal = function(str) {
+                if (str.length > 31) {
+                    var len = Math.ceil(str.length / 31);
+                    var result = [];
+                    for (var i = 0; i < len; i++) {
+                        var innerStr = str.substr(i, i*31)
+                        result.push(parseInt(str.toString(), 2))
+                    }
+                    return result;
+                }
                 return parseInt(str.toString(), 2);
             }
             ArrayUtils.bitArrayToBitNumber = function(bitArray) {
@@ -335,12 +344,10 @@
                         if (canJoin) {
                             var innerTemp = self.joinItemSet(itemX, itemY);
                             var innerStrTemp = innerTemp.toString();
-                            if (innerTemp.length > itemX.length) {
-                              // 插入之前需要判断是否已经有插入的
-                              if(tempStrArray.indexOf(innerStrTemp) < 0){
+                            // 插入之前需要判断是否已经有插入的
+                            if(tempStrArray.indexOf(innerStrTemp) < 0){
                                 tempArray.push(innerTemp);
                                 tempStrArray.push(innerStrTemp);
-                              }
                             }
                         }
                     }
@@ -411,16 +418,24 @@
                 //     }
                 // }
                 //
-                //通过位表的方式进行异或运算处理
-                var itemXToDecimal = self.toDecimal(itemXToZero.join(""));
-                var itemYToDecimal = self.toDecimal(itemYBitArray.join(""));
-                var diffAndCalc = itemXToDecimal ^ itemYToDecimal;
-                while (diffAndCalc !== 0) {
-                  count ++;
-                  diffAndCalc = diffAndCalc & (diffAndCalc -1);
-                  if (count > 2) {
-                    return false;
-                  }
+                // 通过位表的方式进行异或运算处理
+                if (itemXToZero.length > 31) {
+                    for (var i = 0; i < itemXToZero.length; i++) {
+                        if (itemXToZero[i] !== itemYBitArray[i]) {
+                          count ++;
+                        }
+                    }
+                }else {
+                    var itemXToDecimal = self.toDecimal(itemXToZero.join(""));
+                    var itemYToDecimal = self.toDecimal(itemYBitArray.join(""));
+                    var diffAndCalc = itemXToDecimal ^ itemYToDecimal;
+                    while (diffAndCalc !== 0) {
+                      count ++;
+                      diffAndCalc = diffAndCalc & (diffAndCalc -1);
+                      if (count > 2) {
+                        return false;
+                      }
+                    }
                 }
                 if (count === 2) {
                   return true;

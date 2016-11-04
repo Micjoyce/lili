@@ -88,6 +88,7 @@
                     var kItemAndStatistic = ArrayUtils.cItemToKitem(KitemToCitemArray, bitNumbers, self.minSupport, oneItemFrequencyResult, originLen, lItemPositions, oneItemFrequecyPositionObject)
                     lItemPositions = kItemAndStatistic.position;
                     KitemArray = kItemAndStatistic.kItem;
+
                     frequentItemSets = frequentItemSets.concat(kItemAndStatistic.statisticArray)
                 }
                 if (self.debugMode) {
@@ -293,11 +294,13 @@
                 var startTime = new Date();
 
                 // filterKitemBeforeToCitemForEachItemsFreq
+                var isStr = _.isString(itemSets[0]);
+                console.log(isStr)
                 var itemLen = itemSets[0].length;
-                if (itemLen > 2) {
+                if (!isStr && itemLen > 2 ) {
+                    console.log(isStr)
                   itemSets = self.filterKitemBeforeToCitemForEachItemsFreq(itemSets);
                 }
-
                 // var isOneItem = false;
                 // if (itemSets && itemSets[0] && _.isString(itemSets[0])) {
                 //   isOneItem = true;
@@ -331,9 +334,9 @@
             }
 
             ArrayUtils.oldMethonJoinItems = function(itemX, itemY) {
-              var len = itemX.length;
+              var isStr = _.isString(itemX);
               var result = [];
-              if (len === 1) {
+              if (isStr) {
                 result = [itemX, itemY];
                 return result;
               }

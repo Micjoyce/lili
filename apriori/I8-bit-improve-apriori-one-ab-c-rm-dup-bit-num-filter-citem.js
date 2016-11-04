@@ -310,10 +310,10 @@
                 var self = this;
                 var tempArray = [];
                 var startTime = new Date();
-
+                var isStr = _.isString(itemSets[0])
                 // filterKitemBeforeToCitemForEachItemsFreq
                 var itemLen = itemSets[0].length;
-                if (itemLen > 2) {
+                if (!isStr && itemLen > 2) {
                   itemSets = self.filterKitemBeforeToCitemForEachItemsFreq(itemSets);
                 }
 
@@ -348,9 +348,7 @@
                         var canJoin = self.createJoinSetsCompare(itemXToZero, itemYBitArray);
                         if (canJoin) {
                             var innerTemp = self.joinItemSet(itemX, itemY);
-                            if (innerTemp.length > itemX.length) {
-                                tempArray.push(innerTemp);
-                            }
+                            tempArray.push(innerTemp);
                         }
                     }
                 }

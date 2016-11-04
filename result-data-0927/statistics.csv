@@ -1,0 +1,3 @@
+"method","dataName","minSupport","time"
+"./apriori/zhaoguanbao-bitxor-raw-calc","T1014D100K",0.02,13577
+"./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem-origin-concat","T1014D100K",0.02,18061

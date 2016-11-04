@@ -21,19 +21,24 @@
 
 var config = {
 	methods: [
-		// './apriori/apriori'
-		// './apriori/zhaoguanbao-bitxor-raw-calc',
+		// './apriori/apriori',
+		'./apriori/zhaoguanbao-bitxor-raw-calc',
 		'./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem-origin-concat'
+		// './apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem'
 	],
 	datas: [
 		{
 			name: "T1014D100K",
-			minSupports: [0.02, 0.04, 0.06, 0.08, 0.10]
+			minSupports: [0.02]
 		},
-		{
-			name: "mush-data",
-			minSupports: [0.3, 0.4, 0.5, 0.6, 0.7]
-		},
+		// {
+		// 	name: "mush-data",
+		// 	minSupports: [0.3, 0.4, 0.5, 0.6, 0.7]
+		// },
+		// {
+		// 	name: "fenxi",
+		// 	minSupports: [0.1]
+		// }
 	],
 	statisticsFileUrl: "./result-data-0927/statistics.csv"
 }

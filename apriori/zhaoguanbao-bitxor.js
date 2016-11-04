@@ -308,12 +308,10 @@
                         if (canJoin) {
                             var innerTemp = self.joinItemSet(itemX, itemY);
                             var innerStrTemp = innerTemp.toString();
-                            if (innerTemp.length > itemX.length) {
-                              // 插入之前需要判断是否已经有插入的
-                              if(tempStrArray.indexOf(innerStrTemp) < 0){
+                            // 插入之前需要判断是否已经有插入的
+                            if(tempStrArray.indexOf(innerStrTemp) < 0){
                                 tempArray.push(innerTemp);
                                 tempStrArray.push(innerStrTemp);
-                              }
                             }
                         }
                     }
