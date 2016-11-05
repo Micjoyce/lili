@@ -27,18 +27,18 @@ var config = {
 		// './apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem'
 	],
 	datas: [
-		{
-			name: "T1014D100K",
-			minSupports: [0.02]
-		},
+		// {
+		// 	name: "T1014D100K",
+		// 	minSupports: [0.02]
+		// },
 		// {
 		// 	name: "mush-data",
 		// 	minSupports: [0.3, 0.4, 0.5, 0.6, 0.7]
 		// },
-		// {
-		// 	name: "fenxi",
-		// 	minSupports: [0.1]
-		// }
+		{
+			name: "fenxi",
+			minSupports: [0.1]
+		}
 	],
 	statisticsFileUrl: "./result-data-0927/statistics.csv"
 }
