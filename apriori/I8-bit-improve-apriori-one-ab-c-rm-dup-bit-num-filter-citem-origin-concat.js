@@ -315,6 +315,8 @@
                         var itemY = itemSets[j];
                         var canJoin = self.oldMethonJoinItems(itemX, itemY);
                         if (canJoin !== false) {
+                          // 升序排序
+                          canJoin = canJoin.sort(function(b,c){return b > c});
                           var str = canJoin.join("-");
                           if (strTempArr.indexOf(str) === -1) {
                             // count++;
