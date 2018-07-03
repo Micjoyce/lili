@@ -49,9 +49,15 @@
                 this.debugMode = debugMode || false;
                 this.resultFileUrl = resultFileUrl;
             }
-            Algorithm.prototype.analyze = function(transactions) {
+            Algorithm.prototype.analyze = function(rawTransactions) {
                 var self = this;
                 var beforeMillis = new Date().getTime();
+                var transactions = [];
+                rawTransactions.map(function(item) {
+                    transactions.push(_.uniq(item));
+                });
+                console.log(transactions);
+
 
                 var oneItemFrequencyCalcu = ArrayUtils.findOneItemFrequencies(transactions, self.minSupport);
                  //运行时间
@@ -295,10 +301,8 @@
 
                 // filterKitemBeforeToCitemForEachItemsFreq
                 var isStr = _.isString(itemSets[0]);
-                console.log(isStr)
                 var itemLen = itemSets[0].length;
                 if (!isStr && itemLen > 2 ) {
-                    console.log(isStr)
                   itemSets = self.filterKitemBeforeToCitemForEachItemsFreq(itemSets);
                 }
                 // var isOneItem = false;

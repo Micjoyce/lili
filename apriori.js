@@ -22,7 +22,7 @@
 var config = {
 	methods: [
 		// './apriori/apriori',
-		'./apriori/zhaoguanbao-bitxor-raw-calc',
+		// './apriori/zhaoguanbao-bitxor-raw-calc',
 		'./apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem-origin-concat'
 		// './apriori/I8-bit-improve-apriori-one-ab-c-rm-dup-bit-num-filter-citem'
 	],
@@ -36,8 +36,8 @@ var config = {
 		// 	minSupports: [0.3, 0.4, 0.5, 0.6, 0.7]
 		// },
 		{
-			name: "fenxi",
-			minSupports: [0.1]
+			name: "ref",
+			minSupports: [1]
 		}
 	],
 	statisticsFileUrl: "./result-data-0927/statistics.csv"
